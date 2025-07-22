@@ -8,6 +8,8 @@ from sklearn.metrics import accuracy_score
 
 from xgboost import XGBClassifier, plot_tree, plot_importance
 
+from pdpbox import info_plots
+
 import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
@@ -62,3 +64,13 @@ plot_importance(model2)
 plt.yticks(fontsize=15)
 plt.show()
 
+pima_data = data
+pima_features = data.columns[0:8]
+pima_target = data.columns[8]
+
+fig, axes, summary = info_plots.target_plot(
+    data=pima_data
+    , feature="Glucose"
+    , feature_name="Glucose"
+    , target = pima_target
+)
