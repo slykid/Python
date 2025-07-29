@@ -50,9 +50,9 @@ plt.savefig(save_path + "/feature_importance_baseline.png")
 
 # 모델 재학습하기
 cv_params = {
-    "max_depth": np.arange(1, 6, 1),
+    "max_depth": np.arange(1, 10, 1),
     "learning_rate": np.arange(0.05, 0.6, 0.05),
-    "n_estimators": np.arange(50, 300, 50),
+    "n_estimators": np.arange(50, 300, 10),
 }
 
 fix_params = {
@@ -70,5 +70,20 @@ predictions = [round(value) for value in y_pred2]
 acc2 = accuracy_score(y_test, predictions)
 print("Accuracy: %.2f%%" % (acc2 * 100))
 
-for parameter in csv.cv_results_["params"]:
-    print(parameter)
+model2 = XGBClassifier(
+    booster="gbtree",\
+    objective="binary:logistic",\
+    learning_rate=0.03,\
+    n_estimators=150,\
+    reg_alpha=0.15,\
+    reg_lambda=0.7,\
+    max_depth=4
+)
+
+model2.fit(x_train, y_train)
+
+y_pred2 = model2.predict(x_test)
+predictions2 = [round(value) for value in y_pred2]
+
+acc2 = accuracy_score(y_test, predictions2)
+print("Accuracy: %.2f%%" % (acc2 * 100))  # 81.82%
