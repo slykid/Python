@@ -6,6 +6,8 @@ from sklearn.metrics import accuracy_score
 
 from xgboost import XGBClassifier, plot_tree, plot_importance
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import confusion_matrix
+import itertools
 
 import matplotlib
 from matplotlib import pyplot as plt
@@ -87,3 +89,49 @@ predictions2 = [round(value) for value in y_pred2]
 
 acc2 = accuracy_score(y_test, predictions2)
 print("Accuracy: %.2f%%" % (acc2 * 100))  # 81.82%
+
+# 모델 평가
+## confusion matrix
+cm = confusion_matrix(y_test, y_pred2)
+print(cm)
+
+def plot_confusion_matrix(cm, classes, normalize=False, title="Confusion matrix", cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation="nearest", cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+    thresh = cm.max() / 2.
+
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j], horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+
+    plt.tight_layout()
+    plt.ylabel("True label")
+    plt.xlabel("Predicted label")
+    plt.savefig("/Users/kilhyunkim/Pictures/confusion_matrix.png")
+
+def show_data(cm, print_res=0):
+    tp = cm[1, 1]
+    fn = cm[1, 0]
+    fp = cm[0, 1]
+    tn = cm[0, 0]
+
+    if print_res:
+        print("Precision =        {:.3f}".format(tp / (tp + fp)))
+        print("Recall (TPR) =     {:.3f}".format(tp / (tp + fn)))
+        print("Fallout (FPR) =    {:.3f}".format(fp / (fp + tn)))
+
+    return tp/(tp + fp), tp/(tp + fn), fp / (fp + tn)
+
+
+plot_confusion_matrix(cm, ['0', '1'])
+show_data(cm, print_res=1)
+# Precision =        0.796
+# Recall (TPR) =     0.684
+# Fallout (FPR) =    0.103
