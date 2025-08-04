@@ -16,13 +16,13 @@ plt.style.use("seaborn-v0_8")
 save_path = "/Users/kilhyunkim/Pictures"
 
 def get_clf_eval(y_test, y_pred):
-    # confusion_matrix = confusion_matrix(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
 
-    # print("Confusion Matrix")
-    # print(confusion_matrix)
+    print("Confusion Matrix")
+    print(cm)
     print("Accuracy: {0:.4f}, Precision: {1:.4f}, Recall: {2:.4f}".format(accuracy, precision, recall))
 
 dataset = load_breast_cancer()
