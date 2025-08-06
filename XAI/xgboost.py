@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pdpbox.pdp import PDPIsolate
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -12,6 +13,8 @@ import itertools
 import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import rcParams
+
+from pdpbox import info_plots, pdp
 
 matplotlib.use("MacOSX")
 plt.style.use("seaborn-v0_8")
@@ -49,6 +52,68 @@ plot_importance(model)
 plt.title("Feature Importance (BaseLine)")
 plt.tight_layout()
 plt.savefig(save_path + "/feature_importance_baseline.png")
+
+# InfoPlot 생성
+# - 참고자료: https://pdpbox.readthedocs.io/en/latest/PDPIsolate.html
+# - 예시: https://github.com/SauceCat/PDPbox/blob/master/tutorials/pdpbox_binary_classification.ipynb
+target_plot = info_plots.TargetPlot(df=data, feature="Glucose", feature_name="Glucose", target="Outcome")
+fig, axes, summary_df = target_plot.plot(
+    figsize=(20, 10),
+    ncols=2,
+    plot_params=None,
+    engine='matplotlib',
+)
+
+plt.savefig(save_path + "/target_plot_glucose.png")
+
+target_plot = info_plots.TargetPlot(df=data, feature="BloodPressure", feature_name="BloodPressure", target="Outcome")
+fig, axes, summary_df = target_plot.plot(
+    figsize=(20, 10),
+    ncols=2,
+    plot_params=None,
+    engine='matplotlib',
+)
+
+plt.savefig(save_path + "/target_plot_bloodpressure.png")
+
+predict_plot = info_plots.PredictPlot(model=model, df=data, model_features=data.columns[:8], feature="Glucose", feature_name="Glucose")
+fig, axes, summary_df = predict_plot.plot(
+    figsize=(20, 10),
+    ncols=2,
+    plot_params=None,
+    engine='matplotlib',
+)
+
+plt.savefig(save_path + "/predict_plot_glucose.png")
+
+pdp_gc = pdp.PDPIsolate(model=model, df=data, model_features=data.columns[:8], feature="Glucose", feature_name="Glucose")
+fig, axes = pdp_gc.plot(
+    plot_lines=True,
+    frac_to_plot=0.5,
+    plot_pts_dist=True,
+    engine='matplotlib',
+    template='plotly_white',
+)
+plt.savefig(save_path + "/isolate_plot_glucose.png")
+
+target_plot_interact = info_plots.InteractTargetPlot(df=data, features=["BloodPressure", "Glucose"], feature_names=["BloodPressure", "Glucose"], target="Outcome")
+fig, axes, summary_df = target_plot_interact.plot(
+    figsize=(20, 10),
+    ncols=2,
+    engine='matplotlib',
+    template='plotly_white',
+)
+plt.savefig(save_path + "/interact_plot_glucose_bloodpressure.png")
+
+pdp_interaction = pdp.PDPInteract(model=model, df=data, model_features=data.columns[:8], features=["BloodPressure", "Glucose"], feature_names=["BloodPressure", "Glucose"])
+fig, axes = pdp_interaction.plot(
+    plot_type="contour",
+    plot_pdp=True,
+    show_percentile=True,
+    engine='matplotlib',
+    template='plotly_white',
+)
+plt.savefig(save_path + "/interaction_plot_glucose_bloodpressure.png")
 
 # 모델 재학습하기
 cv_params = {
@@ -95,7 +160,7 @@ print("Accuracy: %.2f%%" % (acc2 * 100))  # 81.82%
 cm = confusion_matrix(y_test, y_pred2)
 print(cm)
 
-def plot_confusion_matrix(cm, classes, normalize=False, title="Confusion matrix", cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm, classes, save_path,normalize=False, title="Confusion matrix", cmap=plt.cm.Blues):
     plt.imshow(cm, interpolation="nearest", cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -114,7 +179,7 @@ def plot_confusion_matrix(cm, classes, normalize=False, title="Confusion matrix"
     plt.tight_layout()
     plt.ylabel("True label")
     plt.xlabel("Predicted label")
-    plt.savefig("/Users/kilhyunkim/Pictures/confusion_matrix.png")
+    plt.savefig(f"{save_path}/confusion_matrix.png")
 
 def show_data(cm, print_res=0):
     tp = cm[1, 1]
@@ -130,7 +195,7 @@ def show_data(cm, print_res=0):
     return tp/(tp + fp), tp/(tp + fn), fp / (fp + tn)
 
 
-plot_confusion_matrix(cm, ['0', '1'])
+plot_confusion_matrix(cm, ['0', '1'], save_path)
 show_data(cm, print_res=1)
 # Precision =        0.796
 # Recall (TPR) =     0.684
