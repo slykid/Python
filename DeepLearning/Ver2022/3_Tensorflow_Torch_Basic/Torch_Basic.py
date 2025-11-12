@@ -222,8 +222,8 @@ print(f"Device of tensor: {tensor.device}")
 # 속성 변경하기
 tensor = tensor.reshape(4, 3)
 tensor = tensor.int()
-if torch.cuda.is_available():
-    tensor = tensor.to('cuda')
+if torch.mps.is_available():
+    tensor = tensor.to('mps')
 
 print(f"Shape of tensor: {tensor.shape}")
 print(f"Datatype of tensor: {type(tensor)}")
@@ -233,3 +233,15 @@ print(f"Device of tensor: {tensor.device}")
 # indexing & slicing
 a = torch.arange(1, 13).reshape(3, 4)
 print(a)
+
+print(a[1])
+print(a[0, -1])
+
+a = torch.arange(16).reshape(2, 2, 4)
+print(a, a.shape)
+
+b = a.transpose(1, 2)
+print(b, b.shape)
+
+c = a.permute((2, 0, 1))  # Tensorflow의 transpose와 동일
+print(c, c.shape)
