@@ -237,6 +237,7 @@ print(a)
 print(a[1])
 print(a[0, -1])
 
+# transpose
 a = torch.arange(16).reshape(2, 2, 4)
 print(a, a.shape)
 
@@ -245,3 +246,221 @@ print(b, b.shape)
 
 c = a.permute((2, 0, 1))  # Tensorflow의 transpose와 동일
 print(c, c.shape)
+
+# concat & stack
+a = torch.arange(24).reshape(4, 6)
+b = a.clone().detach()  # torch에서만 행렬을 복사하는 방법임!
+print(a, a.shape)
+print(b, b.shape)
+
+c = torch.cat([a, b], axis=0)
+print(c, c.shape)
+
+c = torch.cat([a, b], axis=1)
+print(c, c.shape)
+
+d = torch.stack([a, b], axis=0)
+print(d, d.shape)
+
+d = torch.stack([a, b], axis=-1)
+print(d, d.shape)
+
+
+# Dataset / DataLoader
+from torch.utils.data import Dataset, DataLoader
+import torchvision.transforms as tr
+
+training_data = datasets.FashionMNIST(
+    root="./data",
+    train=True,
+    download=True,
+    transform=ToTensor()
+)
+
+test_data = datasets.FashionMNIST(
+    root="./data",
+    train=False,
+    download=True,
+    transform=ToTensor()
+)
+
+labels_map = {
+    0: "T-shirt/top",
+    1: "Trouser",
+    2: "Pullover",
+    3: "Dress",
+    4: "Coat",
+    5: "Sandal",
+    6: "Shirt",
+    7: "Sneaker",
+    8: "Bag",
+    9: "Ankle boot"
+}
+
+figure = plt.figure(figsize=(8, 8))
+cols, rows = 3, 3
+for i in range(1, cols * rows + 1):
+    sample_idx = torch.randint(len(training_data), size=(1,)).item()
+    image, label = training_data[sample_idx]
+    figure.add_subplot(rows, cols, i)
+
+    plt.title(labels_map[label])
+    plt.axis("off")
+    plt.imshow(image.squeeze(), cmap="gray")
+
+plt.show()
+
+training_data[0]
+
+# DataLoader
+train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
+
+train_features, train_labels = next(iter(train_dataloader))
+print(f"Features batch shape: {train_features.size()}")
+print(f"Labels batch shape: {train_labels.size()}")
+
+image = train_features[0].squeeze()
+label = train_labels[0]
+
+plt.imshow(image, cmap="gray")
+plt.show()
+print(f"Label: {label}")
+
+
+# Custom Dataset, Custom DataLoader 만들기
+class CustomDataset(Dataset):
+    def __init__(self, np_data, transform=None):
+        self.data = np_data
+        self.transform = transform
+        self.len = np_data.shape[0]
+
+    def __len__(self):
+        return self.len
+
+    def __getitem__(self, idx):
+        sample = self.data[idx]
+
+        if self.transform:
+            sample = self.transform(sample)
+
+        return sample
+
+def square(sample):
+    return sample**2
+
+trans = tr.Compose([square])
+
+np_data = np.arange(10)
+custom_dataset = CustomDataset(np_data, transform=trans)
+
+custom_dataloader = DataLoader(custom_dataset, batch_size=2, shuffle=True)
+for _ in range(3):
+    for data in custom_dataloader:
+        print(data)
+    print("=" * 20)
+
+# Set up Modeling
+device = 'mps' if torch.mps.is_available() else 'cpu'
+print('Using device:', device)
+
+# Model Class 생성하기
+class NeuralNetwork(nn.Module):
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()
+        self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(28 * 28, 128),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+            nn.Linear(128, 10)
+        )
+
+    def forward(self, x):
+        x = self.flatten(x)
+        logits = self.linear_relu_stack(x)
+        return logits
+
+model = NeuralNetwork().to(device)
+print(model)
+
+X = torch.rand(1, 28, 28, device=device)
+logits = model(X)
+y_prob = nn.Softmax(dim=1)(logits)
+y_pred = y_prob.argmax(1)
+
+print(f"Predicted class: {y_pred}")
+
+# Training
+## Loss Function
+loss_func = nn.CrossEntropyLoss()
+learning_rate = 0.001
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+def train_loop(dataloader, model, loss_fn, optimizer):
+    size = len(dataloader.dataset)
+    for batch, (X, y) in enumerate(dataloader):
+        X, y = X.to(device), y.to(device)
+
+        pred = model(X)
+        loss = loss_fn(pred, y)
+
+        # Back Prop.
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch % 100 == 0:
+            loss, current = loss.item(), batch * len(X)
+            print(f"loss: {loss:>7f}   [{current:>5d}/{size:>5d}]")
+
+def test_loop(dataloader, model, loss_fn):
+    size = len(dataloader.dataset)
+    num_batches = len(dataloader)
+    test_loss, correct = 0, 0
+
+    with torch.no_grad():
+        for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
+            pred = model(X)
+            test_loss += loss_fn(pred, y).item()
+            correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+
+    test_loss /= num_batches
+    correct /= size
+
+    print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg. loss: {test_loss:>8f} \n")
+
+epochs = 10
+for t in range(epochs):
+    print(f"Epoch {t+1}\n-----------------------------")
+    train_loop(train_dataloader, model, loss_func, optimizer)
+    test_loop(test_dataloader, model, loss_func)
+
+print("Done!")
+
+
+# Model save & load
+## Parameter만 저장
+torch.save(model.state_dict(), "model_weights.pth")
+
+model2 = NeuralNetwork().to(device)
+print(model2)
+
+model2.eval()  # 해당 모델이 학습 상태가 아님을 표시하는 함수
+test_loop(test_dataloader, model2, loss_func)
+# Test Error:
+#  Accuracy: 5.5%, Avg. loss: 2.324286
+
+
+model2.load_state_dict(torch.load("model_weights.pth"))
+model2.eval()
+test_loop(test_dataloader, model2, loss_func)
+# Test Error:
+#  Accuracy: 88.2%, Avg. loss: 0.328638
+
+## Model 전체 저장
+torch.save(model, 'model.pth')
+model3 = torch.load('model.pth', weights_only=False)  # 2.6 버전 이상 부터는 weights_only=False로 해야 모델 전체를 불러옴
+model3.eval()
+test_loop(test_dataloader, model3, loss_func)
