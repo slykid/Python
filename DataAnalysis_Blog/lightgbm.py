@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.metrics._classification import confusion_matrix
 
-from lightgbm import LGBMClassifier, early_stopping
+from lightgbm import LGBMClassifier, early_stopping, plot_importance
 
 matplotlib.use("MacOSX")
 plt.style.use("seaborn-v0_8")
@@ -31,10 +31,14 @@ target = dataset.target
 
 X_train, X_test, y_train, y_test = train_test_split(feature, target, test_size=0.2, random_state=156)
 
-lgbm_wrapper = LGBMClassifier(n_estimators=400)
+lgbm_wrapper = LGBMClassifier(n_estimators=400, learning_rate=0.05, verbose=-1)
 
 evals = [(X_test, y_test)]
 lgbm_wrapper.fit(X_train, y_train, eval_metric="logloss", eval_set=evals)
-y_pred = lgbm_wrapper.predict(X_test)
-
+y_pred = lgbm_wrapper.predict(X_test, force_row_wise=True)
+pred_proba = lgbm_wrapper.predict_proba(X_test)
 get_clf_eval(y_test, y_pred)
+
+fig,ax = plt.subplots(figsize=(8, 10))
+plot_importance(lgbm_wrapper, ax=ax)
+plt.show()
