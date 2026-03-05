@@ -1,6 +1,6 @@
 import numpy as np
 
-# Test 1. 딕셔너리 덮어쓰기
+# ReinforcementLearning 1. 딕셔너리 덮어쓰기
 V = {'L1': 0.0, 'L2': 0.0}
 
 cnt = 0
@@ -22,7 +22,7 @@ while True:
 # 갱신 횟수: 60
 
 #---------------------------------------------------------
-# Test 2. 재귀함수
+# ReinforcementLearning 2. 재귀함수
 def func_dp(V: dict, gamma=0.9, tolerance=0.0001, cnt=0, max_iter=100000):
     '''
     :param V: {L1: float, L2: float} 의 초기값 dictionary

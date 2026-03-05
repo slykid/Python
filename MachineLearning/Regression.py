@@ -141,7 +141,7 @@ y_train_pred = model.predict(x_train)
 y_test_pred = model.predict(x_test)
 
 plt.scatter(y_train_pred, y_train_pred - y_train, c='steelblue', marker='o', edgecolors='white', label='Training Data')
-plt.scatter(y_test_pred, y_test_pred - y_test, c='limegreen', marker='s', edgecolors='white', label='Test Data')
+plt.scatter(y_test_pred, y_test_pred - y_test, c='limegreen', marker='s', edgecolors='white', label='ReinforcementLearning Data')
 plt.xlabel("Predicted Values")
 plt.ylabel("Residual")
 plt.legend(loc="upper left")

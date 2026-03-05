@@ -107,8 +107,8 @@ model.fit(x_train, y_train, batch_size=BATCH_SIZE, epochs=EPOCHS, validation_spl
 
 score = model.evaluate(x_test, y_test, batch_size=BATCH_SIZE)
 
-print("\nTest Score:", score[0])  # 1.4943
-print("\nTest Accuracy:", score[1])  # 0.668
+print("\nReinforcementLearning Score:", score[0])  # 1.4943
+print("\nReinforcementLearning Accuracy:", score[1])  # 0.668
 
 # Deep CNN
 model2 = CustomDeepCNN(input_shape=INPUT_SHAPE, classes=CLASSES)
@@ -119,5 +119,5 @@ model2.fit(x_train, y_train, batch_size=BATCH_SIZE, epochs=EPOCHS, validation_sp
 
 score2 = model2.evaluate(x_test, y_test, batch_size=BATCH_SIZE)
 
-print("\nTest Score:", score2[0])  # 0.5689
-print("\nTest Accuracy:", score2[1])  # 0.8454
+print("\nReinforcementLearning Score:", score2[0])  # 0.5689
+print("\nReinforcementLearning Accuracy:", score2[1])  # 0.8454

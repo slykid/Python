@@ -24,7 +24,7 @@ proportion = x / n
 print("Proportion:", proportion)
 
 test_statistic = (proportion - p0) / ((p0 * (1 - p0) / n) ** 0.5)
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = norm.cdf(test_statistic)
 print("P-value:", p_value)
@@ -41,7 +41,7 @@ value = p0
 
 stat, pval = proportion.proportions_ztest(count, nobs, value, alternative='smaller')
 
-print("Test Statistic:", stat)
+print("ReinforcementLearning Statistic:", stat)
 print("P-value:", pval)
 
 
@@ -52,7 +52,7 @@ variance = np.var(data, ddof=1)
 print("Variance:", variance)
 
 test_statistic = (len(data) - 1) * variance / 0.08
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = chi2.cdf(test_statistic, df=len(data)-1)
 print("P-value:", p_value)
@@ -74,7 +74,7 @@ print("Mean h2013:", mean_h2013)
 print("SD h2013:", sd_h2013)
 
 test_statistic = (mean_h2003 - mean_h2013) / np.sqrt(2 * 10**2 / 8)
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 pz = norm.cdf(test_statistic, 0, 1)
 p_value = 2 * pz
@@ -95,7 +95,7 @@ print("Pooled Variance (vp):", vp)
 mean_h2003 = np.mean(h2003)
 mean_h2013 = np.mean(h2013)
 test_statistic = (mean_h2003 - mean_h2013) / np.sqrt(vp / n1 + vp / n2)
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = 2 * t.cdf(test_statistic, df=(n1 + n2 - 2))
 print("P-value:", p_value)
@@ -104,7 +104,7 @@ print("P-value:", p_value)
 # 예제7
 t_statistic, p_value = ttest_ind(h2003, h2013, equal_var=True)
 
-print("Test Statistic:", t_statistic)
+print("ReinforcementLearning Statistic:", t_statistic)
 print("P-value:", p_value)
 
 
@@ -126,7 +126,7 @@ print("Variance p_new:", var_p_new)
 
 t_statistic, p_value = ttest_ind(p_old, p_new, equal_var=False, alternative='greater')
 
-print("Test Statistic:", t_statistic)
+print("ReinforcementLearning Statistic:", t_statistic)
 print("P-value:", p_value)
 
 
@@ -142,7 +142,7 @@ test_statistic = mean_diff / (sd_diff / np.sqrt(len(diff)))
 
 print("Mean Difference:", mean_diff)
 print("Standard Deviation of Differences:", sd_diff)
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = t.cdf(test_statistic, df=(len(diff) - 1))
 print("P-value:", p_value)
@@ -151,7 +151,7 @@ print("P-value:", p_value)
 # 예제10
 t_statistic, p_value = ttest_rel(pre_test, post_test, alternative='less')
 
-print("Test Statistic:", t_statistic)
+print("ReinforcementLearning Statistic:", t_statistic)
 print("P-value:", p_value)
 
 
@@ -165,7 +165,7 @@ pp = np.sum(err) / np.sum(n)
 print("Pooled Proportion (pp):", pp)
 
 test_statistic = (p[0] - p[1]) / np.sqrt(pp * (1 - pp) * np.sum(1 / n))
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = 1 - norm.cdf(test_statistic, 0, 1)
 print("P-value:", p_value)
@@ -173,7 +173,7 @@ print("P-value:", p_value)
 
 test_statistic, p_value = sm.stats.proportions_ztest(err, n, alternative='larger')
 
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 print("P-value:", p_value)
 
 
@@ -182,7 +182,7 @@ p_old = [5.2, 4.7, 5.0, 5.3, 4.9, 4.5, 5.4, 5.0, 5.2, 4.8, 5.5, 4.8]
 p_new = [4.6, 4.4, 4.6, 4.7, 4.5, 4.3, 4.1, 4.7, 4.5, 4.2]
 
 test_statistic = np.var(p_old, ddof=1) / np.var(p_new, ddof=1)
-print("Test Statistic:", test_statistic)
+print("ReinforcementLearning Statistic:", test_statistic)
 
 p_value = 2 * (1 - f.cdf(test_statistic, len(p_old) - 1, len(p_new) - 1))
 print("P-value:", p_value)

@@ -26,7 +26,7 @@ print(data_norm['strength'].describe()[['min', '25%', '50%', 'mean', '75%', 'max
 print("\nOriginal 'strength' summary:")
 print(data['strength'].describe()[['min', '25%', '50%', 'mean', '75%', 'max']])
 
-# 3. Split Train & Test Dataset
+# 3. Split Train & ReinforcementLearning Dataset
 train = data_norm.iloc[0:773].reset_index(drop=True)
 test  = data_norm.iloc[773:1030].reset_index(drop=True)
 

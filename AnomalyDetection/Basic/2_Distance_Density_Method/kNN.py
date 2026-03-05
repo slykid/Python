@@ -43,7 +43,7 @@ print(y_test_scores)
 print("On Training Data: ")
 evaluate_print(clf_name, y_train, y_train_scores)
 
-print("On Test Data: ")
+print("On ReinforcementLearning Data: ")
 evaluate_print(clf_name, y_test, y_test_scores)
 
 # 시각화

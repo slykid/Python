@@ -130,7 +130,7 @@ print(classification_report(y_test, y_pred_test))
 y_pred_train[0:5], clf.decision_function(X_train)[0:5]
 
 sns.distplot(clf.decision_function(X_train), label="Train")
-sns.distplot(clf.decision_function(X_test), label="Test")
+sns.distplot(clf.decision_function(X_test), label="ReinforcementLearning")
 plt.legend()
 
 # 3.3 Threshold 재조정
