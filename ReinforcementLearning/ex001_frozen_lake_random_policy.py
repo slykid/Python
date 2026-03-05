@@ -20,6 +20,6 @@ for i in tqdm(range(num_episodes)):
 
     total_timestep += t
 
-print("Number of successful episodes: %d/%d"%(total_reward, num_episodes))
-print("Average number of timesteps per episode: %.2f"%(total_timestep/num_episodes))
+print("Number of successful episodes: %d/%d" % (total_reward, num_episodes))
+print("Average number of timesteps per episode: %.2f" % (total_timestep/num_episodes))
 
