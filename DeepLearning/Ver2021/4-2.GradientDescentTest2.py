@@ -140,8 +140,8 @@ for epoch in range(100):
     print(f"Epoch {epoch+1}: Test loss {loss}")
 print(f"{time.time() - t} seconds elapsed.")
 
-# Epoch 1: Test loss 2.1665131983990324
-# Epoch 2: Test loss 2.142156892336417
+# Epoch 1: ReinforcementLearning loss 2.1665131983990324
+# Epoch 2: ReinforcementLearning loss 2.142156892336417
 # ...
-# Epoch 100: Test loss 1.3813622629762983
+# Epoch 100: ReinforcementLearning loss 1.3813622629762983
 # 0.058008432388305664 seconds elapsed.

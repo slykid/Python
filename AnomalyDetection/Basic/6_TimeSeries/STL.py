@@ -30,7 +30,7 @@ fig.set_size_inches(12, 7)
 fig, ax = plt.subplots(figsize=(9,6))
 _ = plt.hist(res.resid, 100, density=True, alpha=0.75)
 
-# Ztest를 통한 정규성 검증(Nomality Test)
+# Ztest를 통한 정규성 검증(Nomality ReinforcementLearning)
 # - Ztest : 정규분포를 가정하며, 추출된 표본이 동일 모집단(정규분포)에 속하는지 가설 검증하기 위해 사용 (※ p-value가 0.05 이상이면 정규성을 따름)
 r = res.resid.values
 st, p = ztest(r)

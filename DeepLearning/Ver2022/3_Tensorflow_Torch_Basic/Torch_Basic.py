@@ -449,14 +449,14 @@ print(model2)
 
 model2.eval()  # 해당 모델이 학습 상태가 아님을 표시하는 함수
 test_loop(test_dataloader, model2, loss_func)
-# Test Error:
+# ReinforcementLearning Error:
 #  Accuracy: 5.5%, Avg. loss: 2.324286
 
 
 model2.load_state_dict(torch.load("model_weights.pth"))
 model2.eval()
 test_loop(test_dataloader, model2, loss_func)
-# Test Error:
+# ReinforcementLearning Error:
 #  Accuracy: 88.2%, Avg. loss: 0.328638
 
 ## Model 전체 저장

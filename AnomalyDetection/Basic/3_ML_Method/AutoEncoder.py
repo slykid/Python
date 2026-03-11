@@ -48,5 +48,5 @@ sns.displot(mod_z_scores)
 
 print("\nOn Training Data:")
 evaluate_print(clf_name, y_train, y_train_scores)
-print("\nOn Test Data:")
+print("\nOn ReinforcementLearning Data:")
 evaluate_print(clf_name, y_test, y_test_scores)

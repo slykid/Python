@@ -69,5 +69,5 @@ history = model.fit(
 )
 
 score = model.evaluate(x_test, y_test, verbose=VERBOSE)
-print("\nTest Score: ", score[0])
-print("\nTest Accuracy: ", score[1])
+print("\nReinforcementLearning Score: ", score[0])
+print("\nReinforcementLearning Accuracy: ", score[1])

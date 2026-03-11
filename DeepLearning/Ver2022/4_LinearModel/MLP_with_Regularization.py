@@ -217,7 +217,7 @@ test_labels_list = []
 test_preds_list = []
 test_outputs_list = []
 
-for i, (test_images, test_labels) in enumerate(tqdm(test_dataloader, position=0, leave=True, desc="Test")):
+for i, (test_images, test_labels) in enumerate(tqdm(test_dataloader, position=0, leave=True, desc="ReinforcementLearning")):
     # forward
     test_outputs = loaded_model(test_images)
     _, test_preds = torch.max(test_outputs, 1)

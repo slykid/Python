@@ -25,7 +25,7 @@ fout.close()
 
 try:
     fout = open('relativity', 'xt')
-    fout.write("Test for mode 'x'")
+    fout.write("ReinforcementLearning for mode 'x'")
 except FileExistsError:
     print('relativity already exists! Check out file name.')
 
