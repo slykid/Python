@@ -1,5 +1,6 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModel
+from sentence_transformers import SentenceTransformer
 
 # Apple Silicon(MPS) 사용 가능 여부 확인 후 없으면 CPU로 대체
 device = "mps" if torch.backends.mps.is_available() else "cpu"
@@ -29,3 +30,28 @@ print(input_ids)
 
 for id in input_ids[0]:
     print(f"{id}: {tokenizer.decode(id)}")
+
+# Token Embedding
+# Tokenizer load
+tokenizer = AutoTokenizer.from_pretrained("microsoft/deberta-v3-base")
+
+# Language Model load
+model = AutoModel.from_pretrained("microsoft/deberta-v3-xsmall")
+
+# Tokenizing
+tokens = tokenizer("Hello world", return_tensors='pt')
+
+# Caculate Output
+output = model(**tokens)[0]
+output.shape
+
+for token in tokens['input_ids'][0]:
+    print(tokenizer.decode(token))
+
+
+# Text Embedding
+model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+
+# Text to Embedding Vector
+vector = model.encode("Best movie ever!")
+vector.shape # 임베딩 벡터의 값 개수 또는 차원은 모델마다 다름
