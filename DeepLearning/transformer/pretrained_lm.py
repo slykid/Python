@@ -3,9 +3,11 @@ from tqdm import tqdm
 
 from datasets import load_dataset
 from sklearn.metrics import classification_report
+from sklearn.linear_model import LogisticRegression
 
 from transformers import pipeline
 from transformers.pipelines.pt_utils import KeyDataset
+from sentence_transformers import SentenceTransformer
 
 def evaluate_performance(y_true, y_pred):
     """분류 레포트를 만들어 출력합니다."""
@@ -81,3 +83,50 @@ evaluate_performance(data["test"]["label"], y_pred)
 # accuracy                               0.80      1066
 # macro avg          0.81      0.80      0.80      1066
 # weighted avg       0.81      0.80      0.80      1066
+
+# Classification with Embedding
+# Model load
+model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+
+# Text to Embedding
+train_embeddings = model.encode(data["train"]["text"], show_progress_bar=True)
+test_embeddings = model.encode(data["test"]["text"], show_progress_bar=True)
+
+train_embeddings.shape
+# (8530, 768)
+
+clf = LogisticRegression(random_state=42)
+clf.fit(train_embeddings, data["train"]["label"])
+
+y_pred = clf.predict(test_embeddings)
+evaluate_performance(data["test"]["label"], y_pred)
+#                    precision    recall  f1-score   support
+# Negative Review       0.85      0.86      0.85       533
+# Positive Review       0.86      0.85      0.85       533
+
+# accuracy                                  0.85      1066
+# macro avg             0.85      0.85      0.85      1066
+# weighted avg          0.85      0.85      0.85      1066
+
+
+## What if not using classification such as LogisticRegression?
+import numpy as np
+import pandas as pd
+from sklearn.metrics import classification_report
+from sklearn.metrics.pairwise import cosine_similarity
+
+df = pd.DataFrame(np.hstack([train_embeddings, np.array(data["train"]["label"]).reshape(-1, 1)]))
+averaged_target_embeddings = df.groupby(768).mean().values
+
+sim_matrix = cosine_similarity(test_embeddings, averaged_target_embeddings)
+y_pred = np.argmax(sim_matrix, axis=1)
+
+evaluate_performance(data["test"]["label"], y_pred)
+#                    precision    recall  f1-score   support
+# Negative Review       0.85      0.84      0.84       533
+# Positive Review       0.84      0.85      0.84       533
+#
+# accuracy                                  0.84      1066
+# macro avg             0.84      0.84      0.84      1066
+# weighted avg          0.84      0.84      0.84      1066
+
